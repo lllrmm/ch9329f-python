@@ -60,7 +60,13 @@ class CH9329FDevice:
             stopbits=serial.STOPBITS_ONE,
             timeout=min(timeout, 0.05),
             write_timeout=timeout,
+            rtscts=False,
+            dsrdtr=False,
         )
+        # The CH9329F's UART is wired with hardware flow control and only
+        # transmits while RTS is asserted.  Drive it explicitly; do not rely on
+        # the port/driver default state.
+        connection.rts = True
         device = cls(connection, address=address, timeout=timeout, trace=trace)
         device._owns_port = True
         return device
